@@ -23,7 +23,7 @@ const LoginModal = () => {
       });
       loginModal.onClose();
     } catch (error) {
-      console.log("error");
+      //console.log("error");
     } finally {
       setIsLoading(false);
     }
