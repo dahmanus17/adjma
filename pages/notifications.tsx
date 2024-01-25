@@ -30,7 +30,7 @@ export async function getServerSideProps(context: NextPageContext) {
 const Notifications = () => {
   return (
     <>
-      <div className="sticky top-0 z-50">
+      <div className="sticky top-0 z-40">
         <ToggleSidebar />
         <Header showBackArrow label="Notifications" />
       </div>

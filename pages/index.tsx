@@ -5,7 +5,7 @@ import ToggleSidebar from "@/components/ToggleSidebar";
 export default function Home() {
   return (
     <>
-      <div className="sticky top-0 z-50">
+      <div className="sticky top-0 z-40">
         <ToggleSidebar />
         <Form placeholder="What's happening?" />
       </div>
