@@ -13,9 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { email, username, name, password } = req.body;
 
-  /*if (name.toLowerCase().includes('adjma')) {
+  if (name.toLowerCase().includes('adjma') || username.toLowerCase().includes('adjma')) {
     return res.status(400).end();
-  }*/
+  }
 
   try {
     //const { email, username, name, password } = req.body;
