@@ -31,7 +31,7 @@ const Notifications = () => {
   return (
     <>
       <div className="sticky top-0 z-40">
-        <ToggleSidebar />
+{/* <ToggleSidebar /> */}
         <Header showBackArrow label="Notifications" />
       </div>
       <NotificationsFeed />

@@ -81,7 +81,7 @@ const Form: React.FC<FormProps> = ({ placeholder, isComment, postId }) => {
         </div>
       ) : (
         <div className="py-6">
-          <h1 className="text-white text-xl text-center mb-2 font-bold">Welcome to Adjma</h1>
+{/* <h1 className="text-white text-xl text-center mb-2 font-bold">Welcome to Adjma</h1> */}
           <div className="flex flex-row items-center justify-center gap-4">
             <Button label="Login" onClick={loginModal.onOpen} />
             <Button label="Register" onClick={registerModal.onOpen} secondary />

@@ -25,7 +25,7 @@ const UserView = () => {
 
   return (
     <>
-      <div className="sticky top-0 z-40"><ToggleSidebar /></div>
+{/* <div className="sticky top-0 z-40"><ToggleSidebar /></div> */}
       <Header showBackArrow label={fetchedUser?.name} />
       <UserHero userId={userId as string} />
       <UserBio userId={userId as string} />

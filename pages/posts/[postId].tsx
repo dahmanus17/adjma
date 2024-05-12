@@ -26,7 +26,7 @@ const PostView = () => {
   return (
     <>
       <div className="sticky top-0 z-40">
-        <ToggleSidebar />
+{/* <ToggleSidebar /> */}
         <Header showBackArrow label="Post" />
         <PostItem data={fetchedPost} />
         <Form
