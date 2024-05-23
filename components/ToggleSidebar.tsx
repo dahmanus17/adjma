@@ -93,7 +93,7 @@ const ToggleSidebar: React.FC = () => {
     followUsersModal.style.zIndex = "1000";
     followUsersModal.style.padding = "0";
     followUsersModal.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
-    followUsersModal.style.scrollbarWidth = "none";
+    //followUsersModal.style.scrollbarWidth = "none";
     (followUsersModal.style as any).msOverflowStyle = "none";
     (followUsersModal.style as any).webkitOverflowScrolling = "none";
 
