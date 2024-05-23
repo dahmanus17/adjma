@@ -48,7 +48,7 @@ const Form: React.FC<FormProps> = ({ placeholder, isComment, postId }) => {
   }, [body, mutatePosts, isComment, postId, mutatePost]);
 
   return (
-    <div className="border-b-[1px] border-neutral-600 px-5 py-2 bg-zinc-800 w-full" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
+    <div className="border-b-[0.5px] border-neutral-600 px-5 py-2 bg-zinc-800 w-full" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
       {currentUser ? (
         <div className="flex flex-row items-center">
           <div className="mr-4">
@@ -80,7 +80,7 @@ const Form: React.FC<FormProps> = ({ placeholder, isComment, postId }) => {
           </div>
         </div>
       ) : (
-        <div className="py-6">
+        <div className="py-2">
 {/* <h1 className="text-white text-xl text-center mb-2 font-bold">Welcome to Adjma</h1> */}
           <div className="flex flex-row items-center justify-center gap-4">
             <Button label="Login" onClick={loginModal.onOpen} />

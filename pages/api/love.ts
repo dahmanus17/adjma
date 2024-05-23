@@ -34,10 +34,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('Invalid ID');
     }
 
-    let updatedLikedIds = [...(post.likedIds || [])];
+    let updatedLovedIds = [...(post.lovedIds || [])];
 
     if (req.method === 'POST') {
-      updatedLikedIds.push(currentUser.id);
+        updatedLovedIds.push(currentUser.id);
       
       // NOTIFICATION PART START
       try {
@@ -50,8 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (post?.userId) {
           await prisma.notification.create({
             data: {
-              body: 'Someone liked your post!',
-              //body: `${currentUser.name} liked your post!`,
+              body: 'Someone loved your post!',
+              //body: `${currentUser.name} loved your post!`,
               userId: post.userId
             }
           });
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === 'DELETE') {
-      updatedLikedIds = updatedLikedIds.filter((likedId) => likedId !== currentUser?.id);
+        updatedLovedIds = updatedLovedIds.filter((lovedId) => lovedId !== currentUser?.id);
     }
 
     const updatedPost = await prisma.post.update({
@@ -80,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: postId
       },
       data: {
-        likedIds: updatedLikedIds
+        lovedIds: updatedLovedIds
       }
     });
 

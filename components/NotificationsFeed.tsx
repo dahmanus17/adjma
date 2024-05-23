@@ -23,7 +23,7 @@ const NotificationsFeed = () => {
   return ( 
     <div className="flex flex-col">
       {fetchedNotifications.map((notification: Record<string, any>) => (
-        <div key={notification.id} className="flex flex-row items-center p-6 gap-4 border-b-[1px] border-neutral-800">
+        <div key={notification.id} className="flex flex-row items-center p-6 gap-4 border-b-[0.5px] border-neutral-600">
           <AiFillNotification color="white" size={32} />
           <p className="text-white">
             {notification.body}

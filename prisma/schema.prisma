@@ -38,6 +38,10 @@ model Post {
   updatedAt          DateTime @updatedAt
   userId             String @db.ObjectId
   likedIds           String[] @db.ObjectId
+  lovedIds           String[] @db.ObjectId
+  laughedIds         String[] @db.ObjectId
+  surprisedIds       String[] @db.ObjectId
+  sadedIds           String[] @db.ObjectId
   image              String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

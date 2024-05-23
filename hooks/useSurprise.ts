@@ -7,7 +7,7 @@ import useLoginModal from "./useLoginModal";
 import usePost from "./usePost";
 import usePosts from "./usePosts";
 
-const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
+const useSurprise = ({ postId, userId }: { postId: string, userId?: string }) => {
   const { data: currentUser } = useCurrentUser();
   const { data: fetchedPost, mutate: mutateFetchedPost } = usePost(postId);
   const { mutate: mutateFetchedPosts } = usePosts(userId);
@@ -15,13 +15,13 @@ const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
 
   const loginModal = useLoginModal();
 
-  const hasLiked = useMemo(() => {
-    const list = fetchedPost?.likedIds || [];
+  const hasSurprised = useMemo(() => {
+    const list = fetchedPost?.surprisedIds || [];
 
     return list.includes(currentUser?.id);
-  }, [currentUser?.id, fetchedPost?.likedIds]);
+  }, [currentUser?.id, fetchedPost?.surprisedIds]);
 
-  const toggleLike = useCallback(async () => {
+  const toggleSurprise = useCallback(async () => {
     if (!currentUser) {
       return loginModal.onOpen();
     }
@@ -29,8 +29,8 @@ const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
     try {
       let request;
 
-      if (hasLiked) {
-        request = () => axios.delete('/api/like', {
+      if (hasSurprised) {
+        request = () => axios.delete('/api/surprised', {
           headers: {
             'x-api-key': apiKey,
           },
@@ -39,7 +39,7 @@ const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
           },
         });
       } else {
-        request = () => axios.post('/api/like', { postId }, {
+        request = () => axios.post('/api/surprised', { postId }, {
           headers: {
             'x-api-key': apiKey,
           },
@@ -54,12 +54,12 @@ const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
     } catch (error) {
       toast.error('Something went wrong');
     }
-  }, [currentUser, hasLiked, postId, mutateFetchedPosts, mutateFetchedPost, loginModal]);
+  }, [currentUser, hasSurprised, postId, mutateFetchedPosts, mutateFetchedPost, loginModal]);
 
   return {
-    hasLiked,
-    toggleLike,
+    hasSurprised,
+    toggleSurprise,
   }
 }
 
-export default useLike;
+export default useSurprise;

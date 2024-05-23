@@ -38,6 +38,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, a
     <>
       <div
         className="
+          h-full
           justify-center 
           items-center 
           flex 
@@ -52,13 +53,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, a
           bg-opacity-70
         "
       >
-        <div className="relative w-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl h-full lg:h-auto">
+        <div className="relative w-full h-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl lg:h-auto">
           
           <div className="
             h-full
             lg:h-auto
             border-0 
-            rounded-lg 
+            
             shadow-lg 
             relative 
             flex 
@@ -67,6 +68,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, title, body, a
             bg-black 
             outline-none 
             focus:outline-none
+            overflow-y-scroll
             "
           >
           

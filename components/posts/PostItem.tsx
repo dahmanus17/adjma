@@ -1,18 +1,22 @@
-// Import necessary modules and components
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { formatDistanceToNowStrict } from "date-fns";
+import { toast } from 'react-hot-toast';
+import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineClose, AiFillLike, AiOutlineLike } from "react-icons/ai";
+import { RiShareForwardLine, RiFileCopyLine, RiEmotionLaughLine, RiEmotionLaughFill } from "react-icons/ri";
+import { FaRegSurprise, FaSurprise, FaSadTear, FaRegSadTear } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+
 import useLoginModal from "@/hooks/useLoginModal";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useLike from "@/hooks/useLike";
+import useLove from "@/hooks/useLove";
+import useLaugh from "@/hooks/useLaugh";
+import useSurprise from "@/hooks/useSurprise";
+import useSaded from "@/hooks/useSaded";
 import Avatar from "../Avatar";
 
-import { RiShareForwardLine } from "react-icons/ri";
-import { RiFileCopyLine } from "react-icons/ri";
-import { AiOutlineClose } from "react-icons/ai";
-import { toast } from 'react-hot-toast';
-
+import { RiShareForwardFill } from "react-icons/ri";
 
 interface PostItemProps {
   data: Record<string, any>;
@@ -22,57 +26,43 @@ interface PostItemProps {
 const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
-
   const { data: currentUser } = useCurrentUser();
+  
   const { hasLiked, toggleLike } = useLike({ postId: data.id, userId });
+  const { hasLoved, toggleLove } = useLove({ postId: data.id, userId });
+  const { hasLaughed, toggleLaugh } = useLaugh({ postId: data.id, userId });
+  const { hasSurprised, toggleSurprise } = useSurprise({ postId: data.id, userId });
+  const { hasSaded, toggleSad } = useSaded({ postId: data.id, userId });
 
-  const goToUser = useCallback(
-    (ev: any) => {
-      ev.stopPropagation();
-      router.push(`/users/${data.user.id}`);
-    },
-    [router, data.user.id]
-  );
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isThreeDotsOpen, setThreeDotsOpen] = useState(false);
+
+  const goToUser = useCallback((ev: any) => {
+    ev.stopPropagation();
+    router.push(`/users/${data.user.id}`);
+  }, [router, data.user.id]);
 
   const goToPost = useCallback(() => {
     router.push(`/posts/${data.id}`);
   }, [router, data.id]);
 
-  const onLike = useCallback(
-    async (ev: any) => {
-      ev.stopPropagation();
-
-      if (!currentUser) {
-        return loginModal.onOpen();
-      }
-
-      toggleLike();
-    },
-    [loginModal, currentUser, toggleLike]
-  );
-
-  const openPopup = (ev: React.MouseEvent<HTMLDivElement>) => {
+  const handleReaction = useCallback((ev: any, action: () => void) => {
     ev.stopPropagation();
-    setPopupOpen(true);
-  
-  };
-
-  const closePopup = (ev: React.MouseEvent) => {
-    ev.stopPropagation();
-    setPopupOpen(false);
-  };
-
-  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
-
-  const createdAt = useMemo(() => {
-    if (!data?.createdAt) {
-      return null;
+    if (!currentUser) {
+      return loginModal.onOpen();
     }
+    action();
+  }, [loginModal, currentUser]);
 
-    return formatDistanceToNowStrict(new Date(data.createdAt));
-  }, [data.createdAt]);
+  const handlePopupToggle = (ev: React.MouseEvent) => {
+    ev.stopPropagation();
+    setPopupOpen((prev) => !prev);
+  };
 
-  const [isPopupOpen, setPopupOpen] = useState(false);
+  const handleThreeDotsToggle = (ev: React.MouseEvent) => {
+    ev.stopPropagation();
+    setThreeDotsOpen((prev) => !prev);
+  };
 
   const copyToClipboard = (ev: React.MouseEvent<SVGElement, MouseEvent>) => {
     ev.stopPropagation();
@@ -86,19 +76,29 @@ const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
     document.execCommand("copy");
 
     document.body.removeChild(textArea);
-    toast.success('Post link copied',{duration:3000});
-    closePopup(ev);
+    toast.success('Post link copied', { duration: 3000 });
+    setPopupOpen(false);
   };
 
-  const preventPropagation = (ev: React.MouseEvent<HTMLDivElement>) => {
-    ev.stopPropagation();
-  };
+  const LikeIcon = hasLiked ? AiFillLike : AiOutlineLike;
+  const LovedIcon = hasLoved ? AiFillHeart : AiOutlineHeart;
+  const LaughedIcon = hasLaughed ? RiEmotionLaughFill : RiEmotionLaughLine;
+  const SurprisedIcon = hasSurprised ? FaSurprise : FaRegSurprise;
+  const SadedIcon = hasSaded ? FaSadTear : FaRegSadTear;
+
+  const createdAt = useMemo(() => {
+    if (!data?.createdAt) {
+      return null;
+    }
+
+    return formatDistanceToNowStrict(new Date(data.createdAt));
+  }, [data.createdAt]);
 
   return (
     <div
       onClick={goToPost}
       className="
-        border-b-[1px] 
+        border-b-[0.5px] 
         border-neutral-600 
         p-5 
         cursor-pointer
@@ -138,11 +138,11 @@ const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
             </span>
             <span className="text-neutral-500 text-sm">{createdAt}</span>
           </div>
-
+          
           <div className="text-white mt-1 flex">
             <div
               style={{
-                maxWidth: "300px",
+                maxWidth: "100%",
                 overflowWrap: "break-word",
                 wordWrap: "break-word",
                 wordBreak: "break-word",
@@ -152,69 +152,139 @@ const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
               {data.body}
             </div>
           </div>
-
-          <div className="flex flex-row items-center mt-3 gap-10">
-            <div
-              className="
-                flex 
-                flex-row 
-                items-center 
-                text-neutral-500 
-                gap-2 
-                cursor-pointer 
-                transition 
-                hover:text-[#29ab87]
-            "
-            >
-              <AiOutlineMessage size={20} />
-              <p>{data.comments?.length || 0}</p>
-            </div>
-            <div
-              onClick={onLike}
-              className="
-                flex 
-                flex-row 
-                items-center 
-                text-neutral-500 
-                gap-2 
-                cursor-pointer 
-                transition 
-                hover:text-red-500
-            "
-            >
-              <LikeIcon color={hasLiked ? "red" : ""} size={20} />
-              <p>{data.likedIds.length}</p>
-            </div>
-
-            <div
-              id="sharePostButton"
-              onClick={openPopup}
-              className="
-                flex 
-                flex-row 
-                items-center 
-                text-neutral-500 
-                gap-2 
-                cursor-pointer 
-                transition 
-                hover:text-[#29ab87]
-            "
-            >
-              <RiShareForwardLine size={22} />
-            </div>
+        </div>
+        <div id="threeDots" className="ml-auto relative" onClick={handleThreeDotsToggle}>
+          <BsThreeDotsVertical color="rgb(115 115 115)" size={20} />
+          {isThreeDotsOpen && (
+            <div onClick={handlePopupToggle} className="absolute top-0 right-full mr-0 bg-zinc-700 text-white p-1 rounded-md flex flex-col" style={{ width: "fit-content", height: "fit-content" }}>
+            <span className="cursor-pointer p-2 flex-1"><div
+          id="sharePostButton"
+          //onClick={handlePopupToggle}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-100
+            gap-0
+            cursor-pointer 
+            transition 
+            
+        "
+        >
+        Share <RiShareForwardFill size={22} />
+        </div></span>
+            {/*<span className="cursor-pointer p-0 flex-1">Signal</span>*/}
           </div>
+          )}
         </div>
       </div>
+      <div id="reactions" className="flex flex-row items-center mt-3 gap-3 w-full" style={{ paddingLeft: "57px" }}>
+        <div
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+            hover:text-[#29ab87]
+        "
+        >
+          <AiOutlineMessage size={20} />
+          <p>{data.comments?.length || 0}</p>
+        </div>
+        <div
+          onClick={(ev) => handleReaction(ev, toggleLike)}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+          hover:text-[#29ab87]
+        "
+        >
+          <LikeIcon color={hasLiked ? "#29ab87" : ""} size={20} />
+          <p>{data.likedIds.length}</p>
+        </div>
+        <div
+          onClick={(ev) => handleReaction(ev, toggleLove)}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+            hover:text-red-500
+        "
+        >
+          <LovedIcon color={hasLoved ? "red" : ""} size={20} />
+          <p>{data.lovedIds.length}</p>
+        </div>
+        <div
+          onClick={(ev) => handleReaction(ev, toggleLaugh)}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+            hover:text-[#ffcb4c]
+        "
+        >
+          <LaughedIcon color={hasLaughed ? "#ffcb4c" : ""} size={20} />
+          <p>{data.laughedIds.length}</p>
+        </div>
+        <div
+          onClick={(ev) => handleReaction(ev, toggleSurprise)}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+            hover:text-[#ffcb4c]
+        "
+        >
+          <SurprisedIcon color={hasSurprised ? "#ffcb4c" : ""} size={17.5} />
+          <p>{data.surprisedIds.length}</p>
+        </div>
+        <div
+          onClick={(ev) => handleReaction(ev, toggleSad)}
+          className="
+            flex 
+            flex-row 
+            items-center 
+            text-neutral-500 
+            gap-0.5
+            cursor-pointer 
+            transition 
+            hover:text-[#ffcb4c]
+        "
+        >
+          <SadedIcon color={hasSaded ? "#ffcb4c" : ""} size={17.5} />
+          <p>{data.sadedIds.length}</p>
+        </div>
+        
+      </div>
 
-      {/* Popup content */}
       {isPopupOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50 cursor-default"
-          onClick={preventPropagation}
+          onClick={(ev) => ev.stopPropagation()}
         >
-          <div className="bg-gray-800 text-white p-5 rounded-md relative w-full max-w-xs sm:max-w-md">
+          <div className="bg-zinc-800 text-white p-5 rounded-md relative w-full max-w-xs sm:max-w-md">
             <button
-              onClick={closePopup}
+              onClick={handlePopupToggle}
               className="absolute top-2 right-2 text-gray-500"
             >
               <AiOutlineClose size={20} />

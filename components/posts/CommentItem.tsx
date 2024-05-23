@@ -31,7 +31,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
   return (
     <div
       className="
-        border-b-[1px] 
+        border-b-[0.5px] 
         border-neutral-600 
         p-5 
         cursor-pointer 

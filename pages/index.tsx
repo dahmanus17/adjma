@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <div className="sticky top-0 z-40">
         <ToggleSidebar />
-        <Form placeholder="What's happening?" />
+        <Form placeholder="What's on your mind" />
       </div>
       <PostFeed />
     </>
