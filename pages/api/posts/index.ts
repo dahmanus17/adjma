@@ -68,7 +68,7 @@ export default async function handler(
       }
       //to put a specific post at the top
       const index = posts.findIndex(
-        (obj) => obj.id === "65be94f5cb2b1facd0b03b5d"
+        (obj) => obj.id === "66508cb22badac9e16214b57"
       );
 
       if (index !== -1) {
