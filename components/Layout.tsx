@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Sidebar />
         </div>
       )}
-      <div className="flex-1 border-l border-r border-neutral-700 overflow-y-scroll">
+      <div className="flex-1 border-l border-r border-neutral-700 overflow-y-scroll overflow-x-hidden">
         {children}
       </div>
       <div className="w-1/4 hidden lg:block">
