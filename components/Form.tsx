@@ -31,7 +31,10 @@ const Form: React.FC<FormProps> = ({ placeholder, isComment, postId }) => {
   const onSubmit = useCallback(async () => {
     try {
       setIsLoading(true);
-
+      if(body.length > 250) {
+        isComment ? toast.error('Reply must be less than 250 characters') : toast.error('Post must be less than 250 characters');
+        return;
+      }
       const url = isComment ? `/api/comments?postId=${postId}` : '/api/posts';
 
       await axios.post(url, { body });

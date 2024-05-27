@@ -35,7 +35,34 @@ const EditModal = () => {
     try {
       setIsLoading(true);
 
-      await axios.patch('/api/edit', { name, username, bio, profileImage, coverImage });
+      //on regarde si name valide
+      if(!name){
+        toast.error('Please enter a name.');
+        return;
+      }
+      //si name valide
+      if (!/^[a-zA-Z\s]{1,50}$/.test(name)) {
+        toast.error('Please enter a valid name.');
+        return;
+      }
+
+      //on regarde si username valide
+      if(!username){
+        toast.error('Please enter a username.');
+        return;
+      }
+      //si username valide
+      if (!/^[a-zA-Z0-9_]{1,25}$/.test(username)) {
+        toast.error('Please enter a valid username.');
+        return;
+      }
+      //si bio valide
+      if (!/^[a-zA-Z0-9\s!?.:,]{0,100}$/.test(bio)) {
+        toast.error('Please enter a valid bio.');
+        return;
+      }
+
+      await axios.patch('/api/edit', { name, username, bio/*, profileImage, coverImage*/ });
       mutateFetchedUser();
 
       toast.success('Updated');
@@ -46,7 +73,7 @@ const EditModal = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [editModal, name, username, bio, mutateFetchedUser, profileImage, coverImage]);
+  }, [editModal, name, username, bio, mutateFetchedUser/*, profileImage, coverImage*/]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

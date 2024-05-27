@@ -6,8 +6,7 @@ import useRegisterModal from "@/hooks/useRegisterModal";
 import axios from "axios";
 import toast from "react-hot-toast";
 import {signIn} from "next-auth/react";
-import Button from "../Button";
-//import { error } from "console";
+
 
 const RegisterModal = () => {
   const loginModal = useLoginModal();
@@ -29,7 +28,7 @@ const RegisterModal = () => {
   }, [loginModal, registerModal, isLoading]);
 
   const isPasswordValid = (password: string): boolean => {
-    const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,}$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,50}$/;
     return passwordRegex.test(password);
   };
 
@@ -38,7 +37,9 @@ const RegisterModal = () => {
     const nameError = document.querySelector('#name-error');
     const usernameError = document.querySelector('#username-error');
     const passwordError = document.querySelector('#password-error');
-    
+
+    //**********************************VALIDATION INPUT**********************************/
+    //vider espace d'erreur s'il y en a
     if ((emailError as HTMLElement).style.display !== 'none') {
       if(emailError){
         emailError.textContent = '';
@@ -66,8 +67,10 @@ const RegisterModal = () => {
       (passwordError as HTMLElement).style.display = 'none';
       }
     }
+    //fin vider
 
-    //on regarde si champs vides
+    //on regarde si email valide
+    //si champ vide
     if(!email){
       if(emailError){
         (emailError as HTMLElement).style.display = '';
@@ -75,6 +78,17 @@ const RegisterModal = () => {
       }
       return;
     }
+    //si email valide
+    if (!/^(?=.{1,256})(?=.{1,64}@.{1,255}$)[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}$/.test(email)) {
+      if (emailError) {
+        (emailError as HTMLElement).style.display = '';
+        emailError.textContent = 'Please enter a valid email.';
+        return;
+      }
+    }
+
+    //on regarde si name valide
+    //si name vide
     if(!name){
       if(nameError){
         (nameError as HTMLElement).style.display = '';
@@ -82,6 +96,17 @@ const RegisterModal = () => {
       }
       return;
     }
+    //si name valide
+    if (!/^[a-zA-Z\s]{1,50}$/.test(name)) {
+      if (nameError) {
+        (nameError as HTMLElement).style.display = '';
+        nameError.textContent = 'Please enter a valid name.';
+        return;
+      }
+    }
+
+    //on regarde si username valide
+    //si username vide
     if(!username){
       if(usernameError){
         (usernameError as HTMLElement).style.display = '';
@@ -89,6 +114,16 @@ const RegisterModal = () => {
       }
       return;
     }
+    //si username valide
+    if (!/^[a-zA-Z0-9_]{1,25}$/.test(username)) {
+      if (usernameError) {
+        (usernameError as HTMLElement).style.display = '';
+        usernameError.textContent = 'Please enter a valid username - letters, numbers, and underscores only.';
+        return;
+      }
+    }
+
+    //on regarde si password vide
     if(!password){
       if(passwordError){
         (passwordError as HTMLElement).style.display = '';
@@ -96,10 +131,14 @@ const RegisterModal = () => {
       }
       return;
     }
-    
+    //on regarde si le mot de passe est valide critere par critere
     if (!isPasswordValid(password)) {
       if (passwordError) {
         (passwordError as HTMLElement).style.display = '';
+        if(password.length > 50) {
+          passwordError.textContent = 'Password must not exceed 50 characters.';
+          return;
+        }
         if(password.length < 8) {
           passwordError.textContent = 'Password must contain at least 8 characters.';
           return;
@@ -119,6 +158,8 @@ const RegisterModal = () => {
       }
       //return;
     }
+    //**********************************FIN VALIDATION INPUT*********************************/
+
     try {
       setIsLoading(true);
       
