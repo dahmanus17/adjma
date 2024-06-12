@@ -1,12 +1,19 @@
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-
 import Avatar from "../Avatar";
 
 interface CommentItemProps {
   data: Record<string, any>;
 }
+
+// Function to identify and replace URLs with clickable links
+const linkify = (text: string) => {
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlPattern, (url) => {
+    return `<a href="${url}" target="_blank" class="text-blue-500 hover:underline">${url}</a>`;
+  });
+};
 
 const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
   const router = useRouter();
@@ -14,7 +21,6 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
   const goToUser = useCallback(
     (ev: any) => {
       ev.stopPropagation();
-
       router.push(`/users/${data.user.id}`);
     },
     [router, data.user.id]
@@ -24,7 +30,6 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
     if (!data?.createdAt) {
       return null;
     }
-
     return formatDistanceToNowStrict(new Date(data.createdAt));
   }, [data.createdAt]);
 
@@ -80,9 +85,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
                 wordBreak: "break-word",
               }}
               className="flex-grow"
-            >
-              {data.body}
-            </div>
+              dangerouslySetInnerHTML={{ __html: linkify(data.body) }}
+            ></div>
           </div>
         </div>
       </div>

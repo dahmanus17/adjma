@@ -23,6 +23,12 @@ interface PostItemProps {
   userId?: string;
 }
 
+// Function to identify and replace URLs with clickable links
+const linkify = (text: string) => {
+  const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  return text.replace(urlPattern, (url) => `<a href="${url}" target="_blank" class="text-blue-500 hover:underline">${url}</a>`);
+};
+
 const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
@@ -148,9 +154,9 @@ const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
                 wordBreak: "break-word",
               }}
               className="flex-grow"
-            >
-              {data.body}
-            </div>
+              id="postBody"
+              dangerouslySetInnerHTML={{ __html: linkify(data.body) }} // Render HTML
+            />
           </div>
         </div>
         <div id="threeDots" className="ml-auto relative" onClick={handleThreeDotsToggle}>
